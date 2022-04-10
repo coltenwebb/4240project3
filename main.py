@@ -1,13 +1,13 @@
 import sys
 from antlr4 import *
-from ExampleLexer import ExampleLexer
-from ExampleParser import ExampleParser
+from TigerLexer import TigerLexer
+from TigerParser import TigerParser
  
 def main(argv):
     input_stream = FileStream(argv[1])
-    lexer = ExampleLexer(input_stream)
+    lexer = TigerLexer(input_stream)
     stream = CommonTokenStream(lexer)
-    parser = ExampleParser(stream)
+    parser = TigerParser(stream)
     tree = parser.tiger_program()
     #print(stream.getText())
     print(tree.toStringTree(recog=parser))

@@ -1,0 +1,7 @@
+*.interp
+*.tokens
+TigerLexer.py
+TigerListener.py
+TigerParser.py
+
+__pycache__/**

@@ -1,4 +1,4 @@
-grammar Example;
+grammar Tiger;
 
 // Define a grammar called Hello
 ID : [a-zA-Z]+[a-zA-Z0-9_]* ;
