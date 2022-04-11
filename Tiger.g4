@@ -36,8 +36,11 @@ type_id
   | 'float'
   ;
 id_list 
-  : ID 
-  | ID ',' id_list
+  : ID id_list_tail
+  ;
+id_list_tail
+  : 
+  | ',' ID id_list_tail
   ;
 optional_init 
   : /*empty*/ 
@@ -59,32 +62,61 @@ param
   : ID ':' type_
   ;
 stat_seq 
-  : stat 
-  | stat stat_seq
+  : stat stat_seq_tail
+  ;
+stat_seq_tail
+  : 
+  | stat stat_seq_tail
   ;
 
 stat 
-  : lvalue ':=' expr ';' 
-  | 'if' expr 'then' stat_seq 'endif' ';' 
-  | 'if' expr 'then' stat_seq 'else' stat_seq 'endif' ';' 
+  : ID stat_id
+  | 'if' expr 'then' stat_seq stat_if
   | 'while' expr 'do' stat_seq 'enddo' ';' 
   | 'for' ID ':=' expr 'to' expr 'do' stat_seq 'enddo' ';'
-  | opt_prefix ID '(' expr_list ')' ';' 
   | 'break' ';' 
   | 'return' expr ';' 
   | 'let' declaration_segment 'in' stat_seq 'end' 
   ;
 
-opt_prefix
-  : /*empty*/ 
-  | lvalue ':='
+stat_if
+  : 'endif' ';' 
+  | 'else' stat_seq 'endif' ';' 
   ;
+
+stat_id
+  : ':=' stat_id_coloneq
+  | '[' expr ']' ':=' stat_id_coloneq
+  | '(' expr_list ')' ';' 
+  ;
+
+stat_id_coloneq
+  : const expr_prime ';'
+  | ID stat_id_coloneq_id
+  | '(' expr ')' expr_prime ';'
+  ;
+
+stat_id_coloneq_id
+  : expr_id ';'
+  | '(' expr_list ')' ';' 
+  ;
+
 expr
-  : const 
-  | lvalue 
-  | expr binary_operator expr 
-  | '(' expr ')'
+  : const expr_prime
+  | ID expr_id
+  | '(' expr ')' expr_prime
   ;
+
+expr_id
+  : expr_prime
+  | '[' expr ']' expr_prime
+  ;
+
+expr_prime
+  : 
+  | binary_operator expr // expr_prime
+  ;
+
 const
   : INTLIT 
   | FLOATLIT
@@ -110,12 +142,5 @@ expr_list
 expr_list_tail
   : /*empty*/ 
   | ',' expr expr_list_tail
-  ;
-lvalue
-  : ID lvalue_tail
-  ;
-lvalue_tail
-  : /*empty*/ 
-  | '[' expr ']'
   ;
 
